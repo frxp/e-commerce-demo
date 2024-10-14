@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'google' => [
+        'analytics' => [
+            'measurement_id' => env('GA_MEASUREMENT_ID'),
+            'measurement_api_secret' => env('GA_MEASUREMENT_API_SECRET'),
+        ],
+    ],
 ];

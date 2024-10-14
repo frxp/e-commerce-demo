@@ -28,5 +28,9 @@
         <div id="app">
             <home-page />
         </div>
+
+        <script>
+            window.GA_MEASUREMENT_ID = "{{ config('services.google.analytics.measurement_id') }}";
+        </script>
     </body>
 </html>

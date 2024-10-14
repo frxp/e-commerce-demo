@@ -1,12 +1,21 @@
 <script setup>
     import { ref, onMounted } from "vue";
+    import { useGtag } from "vue-gtag-next";
     import axios from "axios";
     import ProductsListCard from "../components/ProductsListCard.vue";
+    import { useRouter } from "vue-router";
 
+    const router = useRouter();
+    const gtag = useGtag();
     const products = ref([]);
     const cart = ref([]);
 
     onMounted(async () => {
+        gtag.pageview({
+            page_path: router.currentRoute.value.fullPath,
+            page_title: "Products List",
+        });
+
         try {
             const response = await axios.get("/api/products");
             products.value = response.data;
@@ -16,18 +25,47 @@
     });
 
     function addToCart(product) {
-        const existingProduct = cart.value.find(p => p.id === product.id);
+        const existingProduct = cart.value.find((p) => p.id === product.id);
         if (!existingProduct) {
             cart.value.push({ ...product });
+
+            gtag.event("add_to_cart", {
+                currency: "USD",
+                value: product.price,
+                items: [
+                    {
+                        item_id: product.id.toString(),
+                        item_name: product.name,
+                        price: product.price,
+                        quantity: 1,
+                    },
+                ],
+            });
         }
+    }
+
+    function getClientId() {
+        return new Promise((resolve) => {
+            gtag.query(
+                "get",
+                window.GA_MEASUREMENT_ID,
+                "client_id",
+                (clientID) => {
+                    resolve(clientID);
+                },
+            );
+        });
     }
 
     async function purchaseProducts() {
         try {
-            const productIds = cart.value.map(item => item.id);
+            const clientId = await getClientId();
 
-            await axios.post('/api/products/purchase', {
-                ids: productIds
+            const productIds = cart.value.map((item) => item.id);
+
+            await axios.post("/api/products/purchase", {
+                ids: productIds,
+                client_id: clientId,
             });
 
             cart.value.forEach(purchasedProduct => {

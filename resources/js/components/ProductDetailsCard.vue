@@ -3,7 +3,9 @@
     import axios from "axios";
     import { onMounted, ref } from "vue";
     import { useRoute } from "vue-router";
+    import { useGtag } from "vue-gtag-next";
 
+    const gtag = useGtag();
     const route = useRoute();
     const productId = route.params.id;
 
@@ -28,9 +30,27 @@
         }
     });
 
+    function getClientId() {
+        return new Promise((resolve) => {
+            gtag.query(
+                "get",
+                window.GA_MEASUREMENT_ID,
+                "client_id",
+                (clientID) => {
+                    resolve(clientID);
+                },
+            );
+        });
+    }
+
     async function purchaseProduct() {
         try {
-            await axios.post(`/api/products/${productId}/purchase`);
+            const clientId = await getClientId();
+
+            await axios.post(`/api/products/${productId}/purchase`, {
+                client_id: clientId,
+            });
+
             isPurchased.value = true;
             product.value.sales += 1;
         } catch (error) {

@@ -14,13 +14,13 @@ export default defineConfig({
         globals: true,
         environment: "happy-dom",
     },
-    // server: {
-    //     host: '0.0.0.0',
-    //     port: 5173,
-    //     strictPort: true,
-    //     hmr: {
-    //         host: 'localhost',
-    //         port: 5173,
-    //     },
-    // },
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+    },
 });

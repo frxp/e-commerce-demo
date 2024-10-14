@@ -1,8 +1,18 @@
 <script setup>
+    import { onMounted } from "vue";
     import { useRouter } from "vue-router";
+    import { useGtag } from "vue-gtag-next";
     import ProductDetailsCard from "../components/ProductDetailsCard.vue";
 
     const router = useRouter();
+    const gtag = useGtag();
+
+    onMounted(() => {
+        gtag.pageview({
+            page_path: router.currentRoute.value.fullPath,
+            page_title: "Product Details",
+        });
+    });
 </script>
 
 <template>
