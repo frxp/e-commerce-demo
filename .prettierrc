@@ -1,0 +1,7 @@
+{
+    "printWidth": 80,
+    "vueIndentScriptAndStyle": true,
+    "singleAttributePerLine": true,
+
+    "plugins": ["prettier-plugin-tailwindcss"]
+}
